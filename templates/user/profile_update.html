@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ block.super }} | Profile Update{% endblock title %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="border p-4 mb-5">
+    <legend class="border-bottom pb-1 mb-3">Edit Your Profile</legend>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{user_form|crispy}}
+        <!-- {{profile_form|crispy}} -->
+        <div>
+            <span class="mb-2" style="display: block">Your profile photo</span>
+            Current Photo :<a href="{{user.profile.image.url}}">{{user.profile.image}}</a>
+            <br>
+            <label for="image" class="btn btn-outline-secondary mt-2">Select photo</label>
+            <input type="file" name="image" id="image" accept="image/*" style="display: none">
+        </div>
+        <input class="btn btn-secondary mt-4" type="submit" value="Save Edit">
+    </form>
+</div>
+{% endblock content %}

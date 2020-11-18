@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load common_tags %}
+{% block title %}{{ block.super }} | Details{% endblock title %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}">
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    <div class="border p-3 mb-3 mt-3 bg-white">
+        <div class="media">
+            <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
+                 src="{{post.author.profile.image.url}}" alt="User Photo">
+            <div class="media-body">
+                <p><b>Title : </b>{{post.title}}</p>
+                <p><b>Date : </b>{{post.post_date|date:'d-F-Y | h:i:s-A'}}</p>
+                <p><b>Author : </b><a href="{% url 'user-detail' post.author.id %}">{{post.author}}</a></p>
+                <p><b>score : </b>{{post.author.profile.user_counters}}</p>
+                <p><b>Level : </b>{{post.author.profile.user_counters|SellerLevel}}</p>
+                <p><b>Rating : </b>{{ post.get_post_rate }}</p>
+                <p><b>IP Address : </b>{{ get_ip_address }}</p>
+
+                {% if post.has_coupon and post.is_coupon_valid %}
+                    <p><b>Old Price : </b> <s>{{ post.price }}$</s></p>
+                    <p><b>Coupon: </b>{{ post.coupon.code }}</p>
+                    <p><b>Discount :</b>
+                        {% if post.coupon.category == "P" %}
+                            {{ post.coupon.discount }}% = {{ post.discount_price }}$
+                        {% else %}
+                            {{ post.coupon.discount }}$
+                        {% endif %}
+                    </p>
+                    <p><b>Price After Discount : </b>{{ post.get_total_price_after_discount }}$</p>
+                {% else %}
+                    <p><b>Price : </b>{{post.price}}$</p>
+                {% endif %}
+
+
+                <p>{{ post.content }}</p>
+
+                <div class="row m-auto">
+                    {% if user and not user.is_anonymous %}
+                        <a class="btn btn-primary" href="{% url 'checkout' post.id %}">Buy This Product</a>
+                    {% else %}
+                        <a class="btn btn-primary" href="{% url 'login' %}?next={{request.get_full_path|urlencode}}">Buy This Product</a>
+                    {% endif %}
+
+                <!-- Button of editing -->
+                {% if post.author == user %}
+                    <div class="form-group btn-editing">
+                        <a class="btn btn-secondary" href="{% url 'update-post' post.id %}">Edit</a>
+                        <a class="btn btn-danger" href="{% url 'delete-post' post.id %}">Delete</a>
+                        {% if not post.has_coupon and post.author == request.user %}
+                            <a class="btn btn-success" href="{% url 'create' post.id %}">Create Coupon</a>
+                        {% endif %}
+
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="border">
+            <div class="border p-2 bg-blue-grey text-white">
+                Seller Title
+            </div>
+            <div class="border p-2 bg-white">
+                {{ post.author.profile.title }}
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <div class="border">
+            <div class="border p-2 bg-blue-grey text-white">
+                About  This Seller
+            </div>
+            <div class="border p-2 bg-white">
+                {{ post.author.profile.bio }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Comment Form -->
+    <div class="mt-3">
+        {% if request.user.is_authenticated %}
+            <div class="border p-4 mb-5 mt-4">
+                <form method="POST" id="createCommentForm" class="comment-form" action=".">
+                    {% csrf_token %}
+                    {{comment_form|crispy}}
+                    <input class="btn btn-secondary" type="submit" value="Add Comment">
+                </form>
+            </div>
+        {% else %}
+            <a class="btn btn-success" href="{% url 'login' %}" role="button">Add Comment</a>
+        {% endif %}
+    </div>
+
+    <!-- Display Comments -->
+    <h2 class="border-bottom mt-5 mb-3">({{comments.count}}) Comment{{ comments.count|pluralize }} </h2>
+    {% for comment in comments %}
+        <div class="media">
+            <a class="mr-3" href="{% url 'user-detail' comment.user.id %}">
+                <img src="{{ comment.user.profile.image.url }}" class="img-fluid rounded-circle border m-2" alt="User Profile Image"></a>
+            <div class="media-body">
+                <h5 class="mt-0">
+                    <a class="mr-3" href="{% url 'user-detail' comment.user.id %}">
+                        {{ comment.user|capfirst }}</a>| <small>{{comment.comment_date|date:'d-F-Y @ h:i:s-A'}}</small></h5>
+                {{comment.content}}<br>
+                <h6 class="text-dark">Ratings : {{comment.rating}}</h6>
+            </div>
+        </div>
+
+        {% for reply in comment.replies.all %}
+            <div class="media ml-5 mt-3">
+                <a class="mr-3" href="{% url 'user-detail' reply.user.id %}">
+                    <img src="{{ reply.user.profile.image.url }}" class="img-fluid rounded-circle border m-2" alt="User Profile Image">
+                </a>
+                <div class="media-body">
+                    <h5 class="mt-0">
+                        <a class="mr-3" href="{% url 'user-detail' reply.user.id %}">
+                            {{ reply.user|capfirst }}</a></h5>
+                    {{ reply.content }}
+
+                </div>
+            </div>
+        {% endfor %}
+
+        {% if request.user.is_authenticated %}
+            <div class="media mt-3 ml-5 mb-3">
+                <a class="mr-3" href="{% url 'user-detail' request.user.id %}">
+                    <img src="{{ request.user.profile.image.url }}" class="img-fluid rounded-circle border m-2" alt="User Profile Image">
+                </a>
+                <div class="media-body">
+                    <form method="POST" id="my-ajax-form" class="reply-form" action=".">
+                        {% csrf_token %}
+                        {{comment_form|crispy}}
+                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                        <input class="btn btn-secondary" type="submit" value="Add reply">
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+    {% endfor %}
+
+    <script src="{% static 'blog/js/jquery3.3.1.js' %}"></script>
+    <script src="{% static 'blog/js/popper.min.js' %}"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+
+
+
+
+{% endblock content %}

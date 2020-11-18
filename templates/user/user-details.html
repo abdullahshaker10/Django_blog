@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load common_tags %}
+{% load humanize %}
+
+{% block title %}{{ block.super }} | Profile{% endblock title %}
+{% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container border profile-data pt-3">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile"
+                       role="tab" aria-controls="v-pills-profile" aria-selected="true">My Profile</a>
+
+                    <a class="nav-link" id="v-pills-posts-tab" data-toggle="pill" href="#v-pills-posts"
+                       role="tab" aria-controls="v-pills-posts" aria-selected="false">My Posts
+                        <span class="badge badge-primary">{{ user.posts.count }}</span></a>
+
+                    <a class="nav-link" id="v-pills-comments-tab" data-toggle="pill" href="#v-pills-comments"
+                       role="tab" aria-controls="v-pills-comments" aria-selected="false">My Comments
+                        <span class="badge badge-primary">{{ user.commenter.count }}</span></a>
+
+                    <a class="nav-link" id="v-pills-soldorders-tab" data-toggle="pill" href="#v-pills-soldorders"
+                       role="tab" aria-controls="v-pills-soldorders" aria-selected="false">My Sold Orders</a>
+
+                    <a class="nav-link" id="v-pills-boughtorders-tab" data-toggle="pill" href="#v-pills-boughtorders"
+                       role="tab" aria-controls="v-pills-boughtorders" aria-selected="false">My Bought Orders</a>
+
+                    <a class="nav-link" id="v-pills-coupons-tab" data-toggle="pill" href="#v-pills-coupons"
+                       role="tab" aria-controls="v-pills-coupons" aria-selected="false">My Coupons</a>
+
+                    <a class="nav-link" id="v-pills-wishlist-tab" data-toggle="pill" href="#v-pills-wishlist"
+                       role="tab" aria-controls="v-pills-wishlist" aria-selected="false">My Wish List</a>
+
+                </div>
+            </div>
+
+            <div class="col-10">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        <div class="row">
+                            <div class="col-md-2 text-center">
+                                <img class="img-fluid rounded-circle border m-2" style="width: 120px; height:120px;"
+                                     src="{{object.profile.image.url}}" alt="{{object.username}}">
+                                {% if  request.user == object.profile.user  %}
+                                    <div class="mt-3">
+                                        <a class="btn btn-secondary bg-secondary" href="{% url 'profile_update' %}">
+                                            <i class="fas fa-pen fa-xs"></i> Edit</a>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-10">
+                                <p><strong>UserName : </strong> {{user.username}}</p>
+                                <p><strong>Name :</strong> {{user.first_name}} {{user.last_name}}</p>
+                                <p><strong>E-mail :</strong> {{user.email}}</p>
+                                <p><strong>Level :</strong> {{ object.profile.user_counters|SellerLevel}} </p>
+                                <p><strong>Bio :</strong> {{object.profile.bio}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-posts" role="tabpanel" aria-labelledby="v-pills-posts-tab">
+                        {% for post in object.posts.all %}
+                            <div class="border border p-2 mb-3 profile-data">
+                                <div class="media">
+                                    <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
+                                         src="{{post.author.profile.image.url}}" alt="User Photo">
+                                    <div class="media-body">
+                                    <span><a class="text-primary" href="{% url 'detail-post' post.slug %}">
+                                        {{post.title}}</a></span>
+                                        <p>{{ post.content|truncatechars:150 }}
+                                            <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+                                                read more ...</a></p>
+                                        <p>
+                                            {% if post.has_coupon %}
+                                                <b>Coupon: {{ post.coupon.code }}</b>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <h4 class="text-center mb-5">There is no posts yet. you can add new post from
+                                <a class="text-primary" href="{% url 'create-post' %}">HERE</a></h4>
+                        {% endfor %}
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-comments" role="tabpanel" aria-labelledby="v-pills-comments-tab">
+                        {% for comment in object.commenter.all %}
+                            <div class="border p-3 mb-3 profile-data">
+                                <div class="media">
+                                    <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
+                                         src="{{comment.post.author.profile.image.url}}" alt="User Photo">
+                                    <div class="media-body">
+                                    <span><a class="text-primary" href="{% url 'detail-post' comment.post.slug %}">
+                                        {{comment.post}}</a></span>
+                                        <p>{{comment.content| truncatechars:100}}
+                                            <a class="text-primary" href="{% url 'detail-post' comment.post.slug %}">
+                                                read more ...</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <h4 class="text-center mb-5">There is no comments yet. you can add new comment any time and earn points with us ..
+                                <a class="text-primary" href="{% url 'home'%}">HERE</a></h4>
+                        {% endfor %}
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-soldorders" role="tabpanel" aria-labelledby="v-pills-soldorders-tab">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Price ($)</th>
+                                <th scope="col">Buyer</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Timer</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in sell %}
+                                <tr class='sell'>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ order.post }}</td>
+                                    <td>{{ order.post.author }}</td>
+                                    <td>{{ order.final_price }}</td>
+                                    <td>{{ order.buyer }}</td>
+                                    {% if order.state == 'Accepted' or order.state == 'Seller Confirmed'%}
+                                            <td class='state{{order.id}}'>{{ order.state }}</td>
+                                                <td class='timerForSelling' data-time = {{order.final_date_to_deliver.isoformat}} data-order = {{order.id}}> 
+                                                    <span class='days{{order.id}}'></span>
+                                                    <span class='hours{{order.id}}'></span>
+                                                    <span class='minutes{{order.id}}'></span>
+                                                    <span class='seconds{{order.id}}'></span>
+                                                    <a class="btn btn-primary confirmOnSeller " >Confirm</a>
+                                                 </td>
+                                    {% else %}
+                                        <td>{{ order.state }}</td>
+                                    {% endif %}
+
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-boughtorders" role="tabpanel" aria-labelledby="v-pills-boughtorders-tab">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Title</th>
+                                <th scope="col">Seller</th>
+                                <th scope="col">Price ($)</th>
+                                <th scope="col">State</th>
+                                <th scope="col">Timer</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in object.orderbuyer.all %}
+                                <tr class='buy'>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td><a href="{% url 'detail-post' order.post.slug %}">{{ order.post.title }}</a></td>
+                                    <td><a href="{% url 'user-detail' order.post.author.pk %}"> {{ order.post.author }}</a></td>
+                                    <td>{{ order.final_price }}</td>
+                                    {% if order.state == 'Accepted' or order.state == 'Seller Confirmed'%}
+                                            <td class='state{{order.id}}'>{{ order.state }}</td>
+                                                <td class='timerForBuying' data-time = {{order.final_date_to_deliver.isoformat}} data-order = {{order.id}}> 
+                                                    <span class='days{{order.id}}'></span>
+                                                    <span class='hours{{order.id}}'></span>
+                                                    <span class='minutes{{order.id}}'></span>
+                                                    <span class='seconds{{order.id}}'></span>
+
+                                                         <a class="btn btn-primary confirmOnBuyer"  >Confirm</a>
+
+                                                 </td>
+                                    {% else %}
+                                        <td>{{ order.state }}</td>
+                                    {% endif %}
+
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="v-pills-coupons" role="tabpanel" aria-labelledby="v-pills-coupons-tab">
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Coupon</th>
+                                <th scope="col">Post</th>
+                                <th scope="col">is_complete</th>
+                                <th scope="col">Order Date</th>
+                                <th scope="col">Order By</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for CouponHistory in coupons_history %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ CouponHistory.coupon }}</td>
+                                    <td>{{ CouponHistory.post }}</td>
+                                    <td>{{ CouponHistory.is_complete }}</td>
+                                    <td>{{ CouponHistory.created_at }}</td>
+                                    <td>{{ CouponHistory.created_by }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+
+
+<script>
+  function changeOrderState(url, state, orderId,currentElement){
+      fetch(url, {
+              headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+                Accept: "application/json",
+                "Content-Type": "application/json",
+              },
+              method: "PATCH",
+              body: JSON.stringify({ action:state}),
+            })
+              .then((response) => {
+                return response.json();
+              })
+              .then((data) => {
+                    $('.sell').find(`td.state${orderId}`).text(state)
+                    
+              });
+  }
+
+   function makeTimer(endTime, currentElement, orderId) {
+        //console.log(element)
+        endTime = (Date.parse(endTime) / 1000);
+        var now = new Date();
+        now = (Date.parse(now) / 1000);
+
+        var timeLeft = endTime - now;
+
+        var days = Math.floor(timeLeft / 86400);
+        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
+        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600 )) / 60);
+        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
+
+        if (hours < "10") { hours = "0" + hours; }
+        if (minutes < "10") { minutes = "0" + minutes; }
+        if (seconds < "10") { seconds = "0" + seconds; }
+
+        
+        currentElement.find(`span.days${orderId}`).html(days + "<span>d</span>");
+        currentElement.find(`span.hours${orderId}`).html(hours + "<span>h</span>");
+        currentElement.find(`span.minutes${orderId}`).html(minutes + "<span>m</span>");
+        currentElement.find(`span.seconds${orderId}`).html(seconds + "<span>s</span>");
+    }
+
+ $(".timerForSelling").each(function(){
+        let orderId = $(this).data('order')
+        let currentElement = $(this)
+        let url = `/api/order/${orderId}`;
+
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + orderId
+            + '/'
+        );
+
+        chatSocket.onopen = function (event) {
+            console.log("chat opened", event);
+        };
+
+        chatSocket.onmessage = function(e) {
+            console.log('seller recived')
+            const data = JSON.parse(e.data);
+            if (data.message == 'Delivered'){
+                changeOrderState(url, 'Delivered', orderId, currentElement)
+            }
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        chatSocket.onerror = function (event) {
+            console.log("chat error", event);
+        };
+
+        $(this).find('a.confirmOnSeller').click(function(){
+            changeOrderState(url, 'Seller Confirmed', orderId, currentElement)
+            console.log('seller sent')
+              chatSocket.send(JSON.stringify({
+                'message': 'Seller Confirmed'
+            }));
+        })
+        let endTime = $(this).data('time');
+        endTime = new Date(endTime);
+        setInterval(function() { makeTimer(endTime,currentElement,orderId ); }, 1000);
+    });
+    
+    $(".timerForBuying").each(function(){
+        let orderId = $(this).data('order')
+         const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/chat/'
+            + orderId
+            + '/'
+        );
+
+         chatSocket.onmessage = function(e) {
+             console.log('buyer recived')
+            const data = JSON.parse(e.data);
+            $('.buy').find(`td.state${orderId}`).text(data.message)
+          
+
+        };
+        currentElement = $(this)
+        $(this).find('a.confirmOnBuyer').click(function(){
+            console.log('buyer sent')
+            chatSocket.send(JSON.stringify({
+                'message': 'Delivered'
+            }));
+            $('.buy').find(`td.state${orderId}`).text('Delivered')
+            
+        })
+        let endTime = $(this).data('time');
+        endTime = new Date(endTime);
+        setInterval(function() { makeTimer(endTime,currentElement,orderId ); }, 1000);
+    });
+</script>
+{% endblock content %}

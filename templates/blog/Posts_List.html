@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}{{ block.super }} | All{% endblock title %}
+
+<!-- You will not be able to see this text. -->
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.tags}}">
+                {{message}}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            {% for post in posts %}
+                <div class="pb-2 mt-3 col-md-3">
+                    <div class="card shadow">
+                        <img src="{{ post.post_image.url }}" class="card-img-top" height="150px" alt="seller_img">
+                        <div class="card-body">
+                            <div class="media">
+                                <img class="img-fluid rounded-circle border m-2" style="width: 40px; height:40px;"
+                                     src="{{post.author.profile.image.url}}" alt="User Photo">
+                                <div class="media-body">
+                                    <p><a class="text-primary" href="{% url 'user-detail' post.author.id %}">
+                                        {{post.author.first_name}} {{post.author.last_name}}</a></p>
+                                </div>
+                            </div>
+                            <h6 style="height: 10px"><a class="text-primary" href="{% url 'detail-post' post.slug %}">
+                                {{post.title|truncatechars:"48"}}</a></h6>
+                            <br><hr>
+                            <div class="p-2 bd-highlight">
+                                <i class="fa fa-heart" aria-hidden="true"></i>
+                                <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+                                    <i class="fas fa-comment"></i> {{ post.comments.count }}</a>
+                                | <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+                                <i class="fa fa-tag" aria-hidden="true"></i> {{ post.tags.count }}</a>
+
+                                <h6 class="card-text text-danger float-md-right">From {{ post.price }}$</h6>
+                                <br>
+                            </div>
+                            {% if post.has_coupon and post.is_coupon_valid %}
+                                <a href="{% url 'checkout' post.id  %}" class="badge badge-success">Coupon</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% include 'blog/pagination_links.html' %}
+{% endblock content %}

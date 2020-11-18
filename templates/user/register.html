@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}{{ block.super }} | Register{% endblock title %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+    <div class="border p-4 mb-5">
+        <legend class="border-bottom pb-1 mb-3">Register</legend>
+        <form method="POST">
+            <p id="username_error"></p>
+            {% csrf_token %}
+            {{form|crispy}}
+            <input class="btn btn-secondary mt-4" type="submit" value="Register">
+        </form>
+        <div class="border-top mt-4 pt-2">
+            <small>If you are a user .. please <a href="{% url 'login' %}">Log In</a></small>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block script %}
+    <script>
+        $(document).ready(function() {
+            $("#username").on("input", function(event) {
+                var _username = this.value
+                $.ajax({
+                    method: "POST",
+                    url: "/api/user/exist/",
+                    data: {
+                        "username": _username,
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                    },
+                    success: function(data){
+                        console.log(data.msg);
+                        if(data.msg == "no") {
+                            // show error message to user
+                            $("#username_error").text("User with this username already exists.Please choose again");
+                        }
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                })
+
+            })
+        });
+    </script>
+{% endblock script %}

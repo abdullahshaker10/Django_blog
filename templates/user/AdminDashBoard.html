@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load common_tags %}
+
+{% block title %}{{ block.super }} | Admin-DashBoard{% endblock title %}
+{% block content %}
+
+    <div class="wrapper" id="page-wrapper">
+        <div class="container" id="content" tabindex="-1">
+            <div class="row">
+                <div class="metr">
+                    <h3><span class="badge badge-primary">Users</span></h3><hr>
+                    <a class="metrostyle orgmetro" style="cursor: pointer" href="">
+                        <span class="fa fa-users" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px;float:left"></span>
+                        <span style="color: white; font-size: 1.1em; float: right; margin-top: 5px; padding-right: 0.2em">{{users.count}}</span>
+                        <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:30px">Total Users</span>
+                    </a>
+                </div>
+                <div>
+                <a class="metrostyle orgmetro" style="cursor: pointer" href="">
+                    <span class="fa fa-users" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px;float:left"></span>
+                    <span style="color: white; font-size: 1.1em; float: right; margin-top: 5px; padding-right: 0.2em">Study</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:30px">Logged-In Users</span>
+                </a>
+                <a class="metrostyle toometro" style="cursor: pointer" href="">
+                    <span class="fa fa-users" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px;float:left"></span>
+                    <span style="color: white; font-size: 1.1em; float: right; margin-top: 5px; padding-right: 0.2em">{{posts.count}}</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:30px">Total Posts</span>
+                </a>
+                <a class="metrostyle eenmetro" style="cursor: pointer" href="">
+
+                    <span class="fa fa-cogs" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">{{ categoryss.count }}</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px ;margin-right:50px"> Categories </span>
+
+                </a>
+                <hr><h6>Posts</h6><hr>
+                <a style="cursor: pointer" class="metrostyle metrostylelarge  boometro" href="../Medical/Hospitals_List.aspx">
+                    <span class="fa fa-hospital-o" style="font-size:2em;color:white;padding-left:0.3em;margin-top:3px;float:left"></span>
+                    <span style="color:white;font-size: 1.1em;float:right;margin-top:5px;padding-right:0.2em">37</span>
+                    <span style="color:white;float:left;margin-top:35px;margin-left:10px;margin-right:180px">Hospitals </span>
+                </a>
+                <a class="metrostyle reemetro" style="cursor: pointer" href="../Medical/Branchs_List.aspx">
+                    <span class="fa fa-medkit" style="font-size: 2em; color: white; padding-left: 0.3em ; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">27</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:80px">Branches </span>
+                </a>
+                <a class="metrostyle yoometro" style="cursor: pointer" href="../Medical/Clinics_List.aspx">
+
+                    <span class="fa fa-stethoscope" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">17</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:80px">Clinics</span>
+                </a>
+            </div>
+            <div class="metr">
+
+                <a style="cursor: pointer" class="metrostyle  reemetro" href="">
+
+                    <span class="fa fa-globe" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">7</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:100px">Cities</span>
+                </a>
+                <a style="cursor: pointer" class="metrostyle metrostylelarge  toometro"href="../ExaminationGUI/ReciptionGUI/Reservation.aspx">
+                    <span class="fa fa-ticket" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">7</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:120px">Reservation Type</span>
+                </a>
+                <a style="cursor: pointer" class="metrostyle yoometro" href="../Admin/VisitType.aspx">
+
+                    <span class="fa fa-vimeo-square" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">7</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:70px">Visit Type</span>
+                </a>
+
+                <a style="cursor: pointer" class="metrostyle  toometro" href="../Admin/MedicalLab_List.aspx">
+                    <span class="fa fa-flask" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">27</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px ;margin-right:100px">Labs</span>
+                </a>
+                <a style="cursor: pointer" class="metrostyle  orgmetro"  href="../Admin/MedicalRad_List.aspx">
+                    <span class="fa fa-bookmark" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">47</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:180px">Rads</span>
+                </a>
+            </div>
+            <div class="metr">
+                <a style="cursor: pointer" class="metrostyle eenmetro" href="../Admin/Sample_List.aspx">
+                    <span class="fa fa-heartbeat" style="font-size:2em;color:white;padding-left:0.3em;margin-top:3px ;float:left"></span>
+                    <span style="color:white;font-size: 1.1em;float:right;margin-top:5px;padding-right:0.2em">7</span>
+                    <span style="color:white;float:left;margin-top:35px;margin-left:10px;margin-right:180px">Samples</span>
+                </a>
+                <a class="metrostyle yoometro" style="cursor: pointer" href="../UserGUI/Users_List.aspx">
+                    <span class="fa fa-plus-square-o" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">87</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:80px">Drugs </span>
+                </a>
+                <a class="metrostyle eenmetro" style="cursor: pointer" href="">
+
+                    <span class="fa fa-glass" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">342</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:80px">Dose</span>
+                </a>
+                <a class="metrostyle metrostylelarge reemetro" style="cursor: pointer" href="../Admin/Diseases.aspx">
+                    <span class="fa fa-bed" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">8</span>
+                    <span style="color: white; float: left; margin-top: 35px; margin-left: 10px;margin-right:180px">Diseases </span>
+                </a>
+                <a class="metrostyle orgmetro" style="cursor: pointer" href="../Admin/UnaidedVA_List.aspx">
+                    <span class="fa fa-map-marker" style="font-size: 2em; color: white; padding-left: 0.3em; margin-top: 3px ;float:left"></span>
+                    <span style="color: white; font-size:  1.1em; float: right; margin-top: 5px; padding-right: 0.2em">13</span>
+                    <span style="color: white; float: left; margin-top: 35px;margin-right:80px ;margin-bottom:20px;margin-left:10px">Unaided</span>
+                </a>
+            </div>
+            <div class="metr">
+                <a style="cursor: pointer" class="metrostyle metrostylelarge  boometro">
+                    <span class="fa fa-eye" style="font-size:2em;color:white;padding-left:0.3em;margin-top:3px ;float:left"></span>
+                    <span style="color:white;font-size: 1.1em;float:right;margin-top:5px;padding-right:0.2em">47</span>
+                    <span style="color:white;float:left;margin-top:35px;margin-left:10px;margin-right:100px">Slit Lamb Diseases </span>
+                </a>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+
+
+
+{% endblock content %}

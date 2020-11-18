@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load common_tags %}
+{% block title %}{{ block.super }} | Pre-Checkout | {{ post.title|title }} {% endblock title %}
+
+{% block content %}
+    <div class="container">
+
+        <h1 class="m-auto"><b>Pre-Chechout : </b>{{ post.title|title }}</h1>
+
+        <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="{{ post.post_image.url }}" alt="Card image cap">
+            <div class="card-body">
+                <div class="media">
+                    <img class="img-fluid rounded-circle border m-2" style="width: 40px; height:40px;"
+                         src="{{post.author.profile.image.url}}" alt="User Photo">
+                    <div class="media-body">
+                        <p><a class="text-primary" href="{% url 'user-detail' post.author.id %}">
+                            {{post.author.first_name}} {{post.author.last_name}}</a></p>
+                        <p>{{ post.author.profile.user_counters|SellerLevel}} </p>
+                    </div>
+                </div>
+                <h5><a class="card-title" href="{% url 'detail-post' object.slug %}">
+                    {{post.title|truncatechars:"50"}}</a></h5>
+                <p class="card-text">{{ post.content|truncatechars:100 }}</p>
+                <hr>
+                {% if post.has_coupon and post.is_coupon_valid   %}
+                    <p><b>Old Price : </b> <s>{{ post.price }}$</s></p>
+                    <p><b>Coupon: </b>{{ post.coupon.code }}</p>
+                    <p><b>Discount :</b>
+                        {% if post.coupon.category == "P" %}
+                            {{ post.coupon.discount }}% = {{ post.discount_price }}$
+                        {% else %}
+                            {{ post.coupon.discount }}$
+                        {% endif %}
+                    </p>
+                    <p><b>Price After Discount : </b>{{ post.get_total_price_after_discount }}$</p>
+                {% else %}
+                    <p><b>Price : </b>{{post.price}}$</p>
+                    <p><b>Service Fees : </b>{{post.site_commission_calc}}$</p>
+                    <p><b>Total Price : </b>{{post.final_price}}$</p>
+                {% endif %}
+
+                <p><b>Service Fees : </b>{{post.site_commission_calc}}$</p>
+                <p><b>Total Price : </b>{{post.final_price}}$</p>
+
+                <a href="{% url 'checkout' %}" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+
+
+    </div>
+{% endblock %}

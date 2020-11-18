@@ -1,0 +1,195 @@
+{% load static %}
+{% load common_tags %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Store</title>
+    <meta id="meta" name="viewport" content="width=device-width;
+	initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+
+
+
+    <!-- Fontawesome min css Link -->
+    <link href="{% static 'blog/fontawesome-5.15.1/css/all.css' %}" rel="stylesheet">
+    <script defer src="{% static 'blog/fontawesome-5.15.1/js/all.js' %}"></script>
+    <!-- Jquery Google CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Bootstrap JS CDN -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-lg">
+            {% if post.has_coupon and post.is_coupon_valid %}
+               <div class="border p-4 mb-5 mt-4">
+                    <div class="contents">
+                        <label>Have coupon?</label>
+                        <br>
+                       <form>
+                            {% csrf_token %}
+                            {{form|crispy}}
+                       </form>
+                            <input class="btn btn-primary validate" type="submit" value="Validate" ></input>
+                        </div>
+               </div>
+            {% endif %}
+            <br>
+            <img src="{{post.post_image.url}}">
+            <h3>{{post.title}}</h3>
+            <div class="with_copoun" style="  display: none;">
+                <p><b>Old Price : </b> <s>{{ post.price }}$</s></p>
+                <p><b>Coupon: </b>{{ post.coupon.code }}</p>
+                <p><b>Discount :</b>
+                    {% if post.coupon.category == "P" %}
+                        {{ post.coupon.discount }}% = {{ post.discount_price }}$
+                    {% else %}
+                        {{ post.coupon.discount }}$
+                    {% endif %}
+                </p>
+                <p class="priceAfterDiscount"><b>Price After Discount : </b></p>
+
+                <p><b>Site Fees : </b>{{post.site_commission_calc}}$</p>
+                <p class='finalPrice'><b>Finall Price : </b>{{post.final_price_with_discount}}$</p>
+            </div>
+            <div class="without_copoun">
+                <p><b>Price : </b>{{post.price}}$</p>
+                <p><b>Site Fees : </b>{{post.site_commission_calc}}$</p>
+                <p ><b>Finall Price : </b>{{post.final_price_without_discount}}$</p>
+            </div>
+            <hr>
+        </div>
+        <div class="col-lg">
+            <br>
+            <div class="card card-body">
+                <h4 class="total" >Total: {{post.final_price_without_discount}} $</h4>
+                <div id="paypal-button-container"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://www.paypal.com/sdk/js?client-id=Afs1w7Kfp1X-3a2OcceMapNV9ph4geWMcxjitrJz-pnqqhgrBN2duV4HPs5wsVXKh0anJV5Dk6-qv1VN&currency=USD"></script>
+<script>
+    let id =  {{post.id}}
+    let total = '{{post.final_price_without_discount}}';
+
+    let url = '/api/post/'+id
+    console.log(id)
+    $( ".validate" ).click(function() {
+        fetch(url, {
+            method: 'GET',
+        })
+        .then((response)=>{
+            return response.json();
+        })
+        .then((data)=>{
+          let inputCoupon = $(".coupon").val();
+          let correctCoupon = data.coupon['code'];
+          if (inputCoupon === correctCoupon ){// coupon input is correct
+          console.log(data)
+            $(".without_copoun").hide();
+            $(".with_copoun").show();
+            $(".wrong_coupon").remove();
+            $(".coupon").css("border","2px solid green");
+            if(!$(".right_coupon").length){
+                $(".coupon").parent().after("<div class='right_coupon' style='color:green;margin-bottom: 20px;'>Valid Coupon</div>");
+            }
+
+            $('.priceAfterDiscount' ).replaceWith('<b> Price After Discount : </b>' + data.price_after_discount + '$')
+            $('.finalPrice' ).replaceWith('<b> Finall Price : </b>' +  data.final_price_with_discount + '$')
+            $('.total' ).text('Total: ' +  data.final_price_with_discount + ' $')
+            total =  data.final_price_with_discount
+        } 
+           
+          else{ //coupon input is not correct
+                  $(".with_copoun").hide();
+                  $(".without_copoun").show();
+                  $(".right_coupon").remove();
+                  $(".coupon").css("border","2px solid red");
+                  if(!$(".wrong_coupon").length){
+                       $(".coupon").parent().after("<div class=' wrong_coupon' style='color:red;margin-bottom: 20px;'>Ivalid Coupon</div>");
+                  }
+                $('.total' ).text('Total: ' +  data.final_price_without_discount + ' $')
+                total =  data.final_price_without_discount
+    
+            }
+        })
+    })
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    var csrftoken = getCookie('csrftoken');
+
+    var postId = '{{post.id}}'
+
+    function completeOrder(){
+        var url = "{% url 'payment_complete' %}";
+        fetch(url, {
+            method:'POST',
+            headers:{
+                'Content-type':'application/json',
+                'X-CSRFToken':csrftoken,
+            },
+            body:JSON.stringify({'postId':postId, 'finalPrice':total})
+        })
+    }
+
+    // Render the PayPal button into #paypal-button-container
+    console.log(total)
+
+    paypal.Buttons({
+
+        style: {
+            color:  'blue',
+            shape:  'pill',
+            label:  'pay',
+            height: 40
+        },
+        // Set up the transaction
+        createOrder: function(data, actions) {
+            return actions.order.create({
+                purchase_units: [{
+                    amount: {
+                        value: total
+                    }
+                }]
+            });
+        },
+
+        // Finalize the transaction
+        onApprove: function(data, actions) {
+            return actions.order.capture().then(function(details) {
+                // Show a success message to the buyer
+                completeOrder()
+                alert('Transaction completed by ' + details.payer.name.given_name + '!');
+            });
+        }
+
+    }).render('#paypal-button-container');
+
+
+</script>
+
+</body>
+</html>

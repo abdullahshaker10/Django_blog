@@ -1,0 +1,40 @@
+{% load static %}
+{% load common_tags %}
+
+
+<div class="card shadow m-2" style="height: 450px; width: 300px">
+    <img src="{{ post.post_image.url }}" class="card-img-top" style="height: 170px" alt="seller_img">
+    <div class="card-body">
+        <div class="media">
+            <img class="img-fluid rounded-circle border m-2" style="width: 40px; height:40px;"
+                 src="{{post.author.profile.image.url}}" alt="User Photo">
+            <div class="media-body">
+                <p><a class="text-primary" href="{% url 'user-detail' post.author.pk %}">
+                    {{post.author.first_name}} {{post.author.last_name}}</a></p>
+                <p>{{ post.author.profile.user_counters|SellerLevel}} </p>
+            </div>
+        </div>
+        <h6 style="height: 10px"><a class="text-primary" href="{% url 'detail-post' post.slug %}">
+            {{post.title|truncatechars:"50"}}</a></h6>
+        <br><hr>
+        <div class="p-2 bd-highlight">
+            | <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+            <i class="fas fa-comment"></i> {{ post.comments.count }}</a>
+            | <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+            <i class="fa fa-tag" aria-hidden="true"></i> {{ post.tags.count }}</a>
+            | <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+            <i class="fas fa-portrait"></i> {{ post.id }}</a>
+            | <a class="text-primary" href="{% url 'detail-post' post.slug %}">
+            <i class="fas fa-star"></i>{{ post.get_post_rate }}</a>
+        </div>
+        <div class="d-flex flex-row-reverse">
+            <div class="d-flex">
+                <h6 class="card-text text-danger float-md-right">Price From
+                    {{ post.price }}$</h6>
+            </div>
+            {% if post.has_coupon and post.is_coupon_valid %}
+                <a href="{% url 'detail-post' post.slug %}" class="badge badge-success">Coupon</a>
+            {% endif %}
+        </div>
+    </div>
+</div>

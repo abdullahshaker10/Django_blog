@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ block.super }} | Create New{% endblock title %}
+{% block content %}
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+{% load crispy_forms_tags %}
+
+
+<div class="border p-4 mb-5">
+    <legend class="border-bottom pb-1 mb-3">New Post </legend>
+    <form method="POST" enctype="multipart/form-data" class="my-ajax-form" data-url="{% url 'create-post' %}">
+        {% csrf_token %}
+        {{ form.media }}
+        {{form|crispy}}
+        <input class="btn btn-secondary mt-4" type="submit" value="Add New Post">
+    </form>
+</div>
+{% endblock content %}

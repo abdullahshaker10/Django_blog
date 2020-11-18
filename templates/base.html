@@ -1,0 +1,737 @@
+{% load static %} {% load common_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <title>{% block title %}ProCoders.co{% endblock title %}</title>
+
+    <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+          crossorigin="anonymous"> -->
+    <link rel="stylesheet" href="{% static 'blog/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/bulma.css' %}" />
+    <link rel="stylesheet" href="{% static 'blog/css/bulma-rtl.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'blog/css/main.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'blog/css/admin.css' %}"
+    />
+    <link rel="shortcut icon" href="{% static 'blog/images/favicon.ico' %}" />
+
+    <!-- Fontawesome min css Link -->
+    <link
+      href="{% static 'blog/fontawesome-5.15.1/css/all.css' %}"
+      rel="stylesheet"
+    />
+    <script
+      defer
+      src="{% static 'blog/fontawesome-5.15.1/js/all.js' %}"
+    ></script>
+
+    <!-- Jquery Google CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap JS CDN -->
+
+    <!-- JavaScript Bundle with Popper.js -->
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/js/bootstrap.bundle.min.js"
+      integrity="sha384-BOsAfwzjNJHrJ8cZidOg56tcQWfp6y72vEJ8xQ9w6Quywb24iOsW913URv1IS4GD"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+    <header>
+      <!--Start Navbar-->
+
+      <!--Start Navbar-->
+      <nav
+        class="navbar-nav navbar-center navbar-expand-lg navbar-light bg-light"
+      >
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img
+            src="{% static 'blog/images/mim-logo.png' %}"
+            alt="ProCoders Logo "
+            width="30px"
+          />
+          Home</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home' %}"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'list-post' %}">List</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'user_list' %}">Users-List</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Tutorials</a
+              >
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">JavaScript</a>
+              </div>
+            </li>
+          </ul>
+
+          {% if request.user.is_authenticated %}
+
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >{{ request.user.username }}</a
+              >
+
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a
+                  class="dropdown-item"
+                  href="{% url 'user-detail' request.user.pk %}"
+                  >Profile</a
+                >
+                <a class="dropdown-item" href="{% url 'create-post' %}"
+                  >New Talent</a
+                >
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+              </div>
+            </li>
+          </ul>
+
+          {% else %}
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'login' %}">Log In</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'register' %}">Register</a>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+      </nav>
+      <div class="notification_div"></div>
+
+      <!--End Navbar-->
+    </header>
+
+    <!--End Gallery-->
+    <!--Start Containers-->
+    <div class="container">
+      <div class="row">
+        <!-- Start Middle Column Content -->
+        <div class="col-md-12">{% block content %} {% endblock content %}</div>
+        <!-- End Middle Column Content -->
+      </div>
+    </div>
+    <!--Start Footer-->
+    <div class="footer">{% include 'blog/footer.html' %}</div>
+    <!--End Containers-->
+
+    <script src="{% static 'blog/js/jquery3.3.1.js' %}"></script>
+    <script src="{% static 'blog/js/popper.min.js' %}"></script>
+    <script src="{% static 'blog/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'blog/js/Chart.min.js' %}"></script>
+    <script src="{% static 'blog/js/fontawesome-all.min.js' %}"></script>
+    <script src="{% static 'blog/js/plugins.js' %}"></script>
+
+    <!--Start Modal  -->
+    <div
+      class="modal fade"
+      id="FavoriteModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title" id="WishModalTitle">Create WishList</h3>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" id="">
+            {% for wishlist in request.user.personwishlist.all %}
+            <div class="row wish-div">
+              <div class="col-9 wish-tit-div">
+                <h5 class="is-size-6 p-1">
+                  <span class="wish-tit">{{wishlist.favlistname}}</span
+                  ><span class="fav-count">({{wishlist.favpost.count}})</span>
+                </h5>
+              </div>
+              <div class="col-3 d-flex flex-row-reverse text-center">
+                <span class="add-post p-1"
+                  ><i class="heart-empty fas fa-heart" aria-hidden="true"></i
+                ></span>
+                <span class="add-post p-1"
+                  ><i class="fas fa-plus wish-add"></i
+                ></span>
+                <span class="remove-post p-1"
+                  ><i
+                    class="far fa-minus-square wish-remove"
+                    aria-hidden="true"
+                  ></i
+                ></span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      $(function () {
+        // Modal behaviour
+        $.ajaxSetup({
+          beforeSend: function (xhr, settings) {
+            function getCookie(name) {
+              var cookieValue = null;
+              if (document.cookie && document.cookie != "") {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                  var cookie = jQuery.trim(cookies[i]);
+                  // Does this cookie string begin with the name we want?
+                  if (cookie.substring(0, name.length + 1) == name + "=") {
+                    cookieValue = decodeURIComponent(
+                      cookie.substring(name.length + 1)
+                    );
+                    break;
+                  }
+                }
+              }
+              return cookieValue;
+            }
+            if (
+              !(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))
+            ) {
+              // Only send the token to relative URLs i.e. locally.
+              xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+            }
+          },
+        });
+        function heartColor(this_c, outcome) {
+          if (outcome == "add") {
+            $(this_c)
+              .parents(".card-body")
+              .find(".heart-empty")
+              .replaceWith(
+                '<i class="heart-fill fas fa-heart" aria-hidden="true"></i>'
+              );
+          } else if (outcome == "remove") {
+            $(this_c)
+              .parents(".card-body")
+              .find(".heart-fill")
+              .replaceWith(
+                '<i class="heart-empty fas fa-heart" aria-hidden="true"></i>'
+              );
+          }
+        }
+        function modalwindowHeartColor(data) {
+          $(".wish-tit").each(function (i) {
+            // console.log(data.wishlist, $(this).text());
+            if ($(this).text() == data.wishlist) {
+              // console.log('True');
+              $(this)
+                .parents(".wish-div")
+                .find(".fa-heart")
+                .replaceWith(
+                  '<i class="heart-fill fas fa-heart" aria-hidden="true"></i>'
+                );
+            } else {
+              // console.log('False');
+              $(this)
+                .parents(".wish-div")
+                .find(".fa-heart")
+                .replaceWith(
+                  '<i class="heart-empty fas fa-heart" aria-hidden="true"></i>'
+                );
+            }
+          });
+        }
+        $(".favorite").on("click", function () {
+          var id = $(this).parents(".double-btn").attr("id");
+          data = { favlistname: "default" };
+          // $.get("/api/posts-list-wishlist/"+id+"/", modalwindowHeartColor);
+          var this_c = $(this);
+          $.ajax({
+            url: "/api/posts-default-wishlist/" + id + "/",
+            data: data,
+            type: "post",
+            context: this,
+            success: function (data) {
+              console.log(data.count);
+              handleModal("Default WishList", "hide", id);
+              if (!$("div.wish-tit-div").find(".wish-tit").length) {
+                if (data.status == "add") {
+                  $(this).text("Added to Favorite");
+                  $(".modal-body").prepend(
+                    "<span class='has-text-success rm-msg'>Post is added to your: " +
+                      data.wishlist +
+                      "</span>"
+                  );
+                } else {
+                  $(this).text("Add to Favorite");
+                  $(".modal-body").prepend(
+                    "<span class='has-text-danger rm-msg'>Post is removed from your: " +
+                      data.wishlist +
+                      "</span>"
+                  );
+                }
+                $(".modal-body")
+                  .find("div.wish-tit-div")
+                  .append(
+                    '<h5 class="is-size-6 p-1"><span class="wish-tit">' +
+                      data.wishlist +
+                      '</span><span class="fav-count">(' +
+                      data.count +
+                      ")</span></h5>"
+                  );
+                heartColor(this_c, data.status);
+              } else {
+                if (data.status == "add") {
+                  $(this).text("Added to Favorite");
+                  $(".modal-body").prepend(
+                    "<span class='has-text-success rm-msg'>Post is added to your: " +
+                      data.wishlist +
+                      "</span>"
+                  );
+                } else {
+                  $(this).text("Add to Favorite");
+                  $(".modal-body").prepend(
+                    "<span class='has-text-danger rm-msg'>Post is removed from your: " +
+                      data.wishlist +
+                      "</span>"
+                  );
+                }
+                var wishlist = $("*:contains(" + data.wishlist + ")");
+                $(wishlist)
+                  .siblings(".fav-count")
+                  .text("(" + data.count + ")");
+                heartColor(this_c, data.status);
+              }
+            },
+            error: function (error) {
+              handleModal("Default WishList", "hide", id);
+              $(".modal-body").prepend(
+                "<small class='has-text-danger rm-msg'>Item is removed from your default wishlist..!!</small>"
+              );
+              // heartColor(this_c, 'remove');
+            },
+          });
+        });
+
+        function handleModal(modalTitle, buttonDisplay, id) {
+          $("#FavoriteModal")
+            .modal("show")
+            .css({ "background-color": "rgba(0, 0, 0, 0.666)" });
+          $(".modal-backdrop").css("z-index", "-1");
+          if ($(".has-text-danger")) $(".has-text-danger").remove();
+          if ($(".has-text-success")) $(".has-text-success").remove();
+          $("#WishModalTitle").html(modalTitle);
+          $(".modal-body").attr("id", id);
+          if (buttonDisplay == "show") {
+            $(".modal-body")
+              .find(".flex-row-reverse")
+              .attr("style", "display: inline !important");
+          } else {
+            $(".modal-body")
+              .find(".flex-row-reverse")
+              .attr("style", "display: none !important");
+          }
+          if ($(".wish-ip").length) {
+            $(".wish-ip").parents(".wish-div").remove();
+          }
+          // console.log(this);
+        }
+
+        //dropdown button (ddb) click event
+        $(".dropdown-btn").on("click", function () {
+          var id = $(this).parents(".double-btn").attr("id");
+          var this_c = $(this);
+          handleModal("Wishlists", "show", id);
+          $.get("/api/posts-list-wishlist/" + id + "/", modalwindowHeartColor);
+          // console.log('one time');
+          // $('.modal-body').prepend("<div class='row wish-div'><div class='col-9 wish-tit-div'></div></div>");
+          $(".modal-body")
+            .find(".wish-div")
+            .first()
+            .clone()
+            .appendTo(".modal-body");
+          $(".modal-body")
+            .find(".wish-tit-div")
+            .first()
+            .empty()
+            .append(
+              "<input class='input is-small wish-ip' type='text' style='max-width:15rem' value='New WishList'>"
+            );
+          // $('.modal-body').find('.flex-row-reverse').first().clone().first().appendTo('div.wish-div');
+          if ($(".modal-body").find(".flex-row-reverse").length > 1) {
+            $(".modal-body")
+              .find(".flex-row-reverse")
+              .first()
+              .empty()
+              .html(
+                '<button type="button" class="small btn btn-sm btn-warning clist">Create List</button>'
+              );
+          }
+          $(".modal-body")
+            .find(".wish-ip")
+            .focus((this.value = this.value));
+          $(".modal-body").find('input[type="text"]').is(":text");
+          // console.log($('input[class="input is-small wish-ip"]').is(':focus'));
+          //
+
+          $("#FavoriteModal").on("hidden.bs.modal", function (e) {
+            var id = $(this).find(".modal-body").attr("id");
+            // console.log(id);
+
+            $.get("/api/posts-list-wishlist/" + id + "/", function heartColor(
+              data
+            ) {
+              if (data.count >= 1) {
+                // console.log($(this_c));
+                $(this_c)
+                  .parents(".card-body")
+                  .find(".fa-heart")
+                  .replaceWith(
+                    '<i class="heart-fill fas fa-heart" aria-hidden="true"></i>'
+                  );
+              } else {
+                // console.log($(this_c));
+                $(this_c)
+                  .parents(".card-body")
+                  .find(".fa-heart")
+                  .replaceWith(
+                    '<i class="heart-empty fas fa-heart" aria-hidden="true"></i>'
+                  );
+              }
+            });
+          });
+        });
+
+        $(".add-post").hover(function () {
+          // console.log('here');
+          $(this).attr("title", "Add to list");
+        });
+
+        $(".modal-body").on("keyup", ".wish-ip", function () {
+          if ($(".has-text-danger").length) {
+            $(".has-text-danger").remove();
+          }
+        });
+
+        // On click "Create List" button or "+" add button Adding post to the existing wishlist or creating new wishlist and adding post to it
+        $("#FavoriteModal").on("click", ".clist", function () {
+          var id = $(this).parents(".modal-body").attr("id");
+          var favListName = $(".wish-ip").val();
+          url_value = "/api/posts-default-wishlist/" + id + "/";
+          createListOrAddToExistingList(favListName, url_value, $(this));
+        });
+        $("#FavoriteModal").on("click", ".add-post", function () {
+          var id = $(this).parents(".modal-body").attr("id");
+          var url_value = "/api/posts-new-wishlist/" + id + "/";
+          var favListName = $(this)
+            .parents(".wish-div")
+            .find(".wish-tit")
+            .text();
+          if ($(".wish-ip").length) {
+            $(".wish-ip").parents(".wish-div").remove();
+          }
+          createListOrAddToExistingList(favListName, url_value, $(this));
+        });
+        function createListOrAddToExistingList(
+          favListName,
+          url_value,
+          thisObj
+        ) {
+          // console.log(favListName);
+          // console.log(id);
+          var this_c = thisObj;
+          var data = { favlistname: favListName };
+          $.ajax({
+            url: url_value,
+            data: data,
+            type: "post",
+            context: this_c,
+            success: function (data) {
+              if (data.wishlist != "Existing") {
+                $(this_c)
+                  .parents(".modal-body")
+                  .prepend(
+                    "<small class='has-text-success rm-msg'>New " +
+                      data.wishlist +
+                      " created and Post is added to this list..!!</small>"
+                  );
+                $(".wish-ip").replaceWith(
+                  '<h5 class="is-size-6 p-1"><span class="wish-tit">' +
+                    data.wishlist +
+                    '</span><span class="fav-count">(' +
+                    data.count +
+                    ")</span></h5>"
+                );
+                $(this_c).replaceWith(
+                  '<span class="add-post p-1"><i class="fas fa-plus wish-add "></i></span>'
+                );
+                setTimeout(function () {
+                  if ($(".modal-body").find(".rm-msg").length > 0) {
+                    $(".modal-body").find(".rm-msg").remove();
+                  }
+                }, 2000);
+              } else {
+                $(this_c)
+                  .parents(".wish-div")
+                  .find(".fav-count")
+                  .text("(" + data.count + ")");
+                $(this)
+                  .parents(".wish-div")
+                  .find(".fa-heart")
+                  .replaceWith(
+                    '<i class="heart-fill fas fa-heart" aria-hidden="true"></i>'
+                  );
+                // $(this_c).parents('.modal-body').prepend("<small class='has-text-success rm-msg'> Post is added to this list..!!</small>");
+                setTimeout(function () {
+                  if ($(".modal-body").find(".rm-msg").length > 0) {
+                    $(".modal-body").find(".rm-msg").remove();
+                  }
+                }, 2000);
+              }
+              // console.log('success');
+            },
+            error: function (xhr, status, error) {
+              error = JSON.parse(xhr.responseText);
+              // console.log(error);
+              if ($(".has-text-success").length)
+                $(".has-text-success").remove();
+              if ($(".has-text-danger").length) $(".has-text-danger").remove();
+              $(this_c)
+                .parents(".modal-body")
+                .prepend(
+                  "<small class='rm-msg has-text-danger'>" +
+                    error.data +
+                    "</small>"
+                );
+            },
+          });
+        }
+
+        $("#FavoriteModal").on("click", ".remove-post", function () {
+          var id = $(this).parents(".modal-body").attr("id");
+          var wishlist_name = $(this)
+            .parents(".wish-div")
+            .find(".wish-tit")
+            .text()
+            .trim();
+          if ($("#FavoriteModal").find(".rm-msg").length > 0) {
+            $("#FavoriteModal").find(".rm-msg").remove();
+          }
+          $.ajax({
+            url: "/api/posts-del-wishlist/" + id + "/",
+            data: { wishlist_name: wishlist_name },
+            type: "post",
+            context: this,
+            success: function (data) {
+              // $(this).parents('.wish-div').append('<span class="rm-msg has-text-success pl-4">Post is removed from this wishlist</span>');
+              $(this)
+                .parents(".wish-div")
+                .find(".fav-count")
+                .text("(" + data.count + ")");
+              setTimeout(function () {
+                if ($(".wish-div").find(".rm-msg").length > 0) {
+                  $(".wish-div").find(".rm-msg").remove();
+                  $(".rm-msg").remove();
+                }
+              }, 2000);
+              $(this)
+                .parents(".wish-div")
+                .find(".fa-heart")
+                .replaceWith(
+                  '<i class="heart-empty fas fa-heart" aria-hidden="true"></i>'
+                );
+            },
+            error: function (error) {
+              $(this)
+                .parents(".wish-div")
+                .append(
+                  '<span class="rm-msg has-text-danger pl-4">Post is not added in this wishlist</span>'
+                );
+              setTimeout(function () {
+                if ($(".wish-div").find(".rm-msg").length > 0) {
+                  $(".wish-div").find(".rm-msg").remove();
+                  $(".rm-msg").remove();
+                }
+              }, 2000);
+            },
+          });
+        });
+      });
+    </script>
+    <!--End Modal  -->
+
+    <!-- Start Google Places API  -->
+    <script
+      type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=GOOGLE_MAPS_API_KEY&libraries=places"
+    ></script>
+    <script>
+      function init() {
+        var input = document.getElementById("address_input");
+        var autocomplete = new google.maps.places.Autocomplete(input);
+      }
+      google.maps.event.addDomListener(window, "load", init);
+    </script>
+
+    <script>
+      function sendNotification(data) {
+        let notification = data.notification;
+        let notificationId = data.notification_id;
+        $("#newNotifications").html("");
+        var add = `<div class="alert alert-primary ${notificationId}" role="alert">
+          ${notification}
+          <button class="btn btn-primary acceptOrder"  >Accept</button>
+          <button class="btn btn-primary rejectOrder" >Reject</button>
+        </div>`;
+        $(".notification_div").append(add);
+      }
+      function changeState(url, data, state) {
+        fetch(url, {
+          headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "PATCH",
+          body: JSON.stringify({
+            action: state,
+            notificationId: data.notification_id,
+          }),
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            fetch("/profile/{{request.user.id}}/", {
+              method: "GET",
+            });
+          });
+      }
+
+      let loc = window.location;
+      let wsStart = "ws://";
+      if (loc.protocol == "https") {
+        wsStart = "wss://:";
+      }
+      let endPoint =
+        wsStart + loc.host + "/ws/notification/{{request.user.id}}/";
+      let ws = new WebSocket(endPoint);
+
+      ws.onopen = function (event) {
+        console.log("opened", event);
+      };
+      ws.onmessage = function (event) {
+        var data = JSON.parse(event.data);
+
+        if (data.has_notification) {
+          let order = data.order;
+
+          sendNotification(data);
+          $(".acceptOrder").click(function () {
+            let url = `/api/order/${order}`;
+            changeState(url, data, "Accepted");
+            let selected = `.${data.notification_id}`;
+            console.log(selected);
+            $(selected).remove();
+          });
+
+          $(".rejectOrder").click(function () {
+            let url = `/api/order/${order}`;
+            changeState(url, data, "Rejected");
+            let selected = `.${data.notification_id}`;
+            $(selected).remove();
+          });
+        }
+      };
+
+      ws.onclose = function (event) {
+        console.log("close", event);
+      };
+
+      ws.onerror = function (event) {
+        console.log("error", event);
+      };
+
+      function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+          var cookies = document.cookie.split(";");
+          for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+              cookieValue = decodeURIComponent(
+                cookie.substring(name.length + 1)
+              );
+              break;
+            }
+          }
+        }
+        return cookieValue;
+      }
+    </script>
+
+    <!-- End Google Places API  -->
+  </body>
+</html>

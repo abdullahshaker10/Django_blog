@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static %}
+{% load common_tags %}
+{% block title %}{{ block.super }} | People{% endblock title %}
+
+{% block content %}
+    <h2>Users List</h2>
+    <div class="container">
+        <div class="row">
+            {% for user in users %}
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="border p-2 profile-data shadow">
+                            <div class="media">
+                                <img class="img-fluid rounded-circle border m-2" style="width: 70px; height:70px;"
+                                     src="{{user.image.url}}" alt="User Photo">
+                                <div class="media-body">
+                                    <small><a class="text-primary" href="{% url 'user-detail' user.id %}">
+                                        {{user.user|truncatechars:'15'}}</a></small><br>
+                                    <small>Total Talents = {{ user.user_counters.user_posts_count }}</small><br>
+                                    <small>Ranking = {{ user.user_counters}} </small> <br>
+                                    <small>Level = {{ user.user_counters|SellerLevel}} </small>
+                                </div>
+                            </div>
+                            <div class="floating">
+                                <hr>
+                                <a class="btn btn-primary bg-primary btn-sm"
+                                   href="{% url 'user-detail' user.id %}">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}
+

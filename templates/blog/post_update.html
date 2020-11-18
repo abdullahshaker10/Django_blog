@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ block.super }} | Update{% endblock title %}
+{% block content %}
+
+    {% load crispy_forms_tags %}
+
+    <script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+    <div class="border p-4 mb-5">
+        <legend class="border-bottom pb-1 mb-3">Edit Post </legend>
+        <form method="POST">
+            {% csrf_token %}
+            {{form.media}}
+            {{form|crispy}}
+            <input class="btn btn-secondary mt-4" type="submit" value="Update">
+        </form>
+    </div>
+{% endblock content %}

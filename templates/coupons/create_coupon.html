@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ block.super }} | Create Coupon | {{ object.title|title }} {% endblock title %}
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<script type="text/javascript" src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+
+<div class="row">
+    <div class="col-md-10 offset-1">
+        <h1>Creating new coupon for <b>{{ object.title|upper }}</b></h1>
+        {% if form.non_field_errors %}
+        {% for error in form.non_field_errors %}
+        <p class="text-danger">{{ error }}</p>
+        {% endfor %}
+        {% endif %}
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Create Coupon</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
